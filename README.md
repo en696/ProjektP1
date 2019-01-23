@@ -14,5 +14,7 @@ Maszyną fizyczną lub wirtualną na której będą instalowane Pody. do utorzen
 Jak działa sieć w Kubernetesie ?
 
 Komponent odpowiedzialny za sieć w k8s nazywa się service  
-odpowiedzialny  jest on za kominikacje miedzy podami jak i rowniez za wystawienie kontenerow na świat.Komunikacja pomiedzy kontenerami w Podzie odbywa się w jadrze linuxa bez udziału sieci.Service może wystepować w 3 stanach ClusterIP, LoadBalancer,
-NodePort.
+odpowiedzialny  jest on za kominikacje miedzy podami jak i rowniez za wystawienie kontenerow na świat.Komunikacja pomiedzy kontenerami w Podzie odbywa się w jadrze linuxa bez udziału sieci tzn  jeśli w jednym podzie mamy 2 lub wieicej kontenerów wszystkie kontenery bedą miały wspolny adres ip .Service może wystepować w 3 stanach ClusterIP, LoadBalancer,NodePort.
+Serwis posiada swój własny adres IP oraz nazwę DNS, a Kubernetes zapewnia mechanizmy równoważenia obciążenia.
+
+Jak działa loadbalanser w k8s
