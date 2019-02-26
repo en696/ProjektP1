@@ -22,11 +22,11 @@ Celem projektu jest pokazanie jednego z sposobów tworzenia (Projetkowania i wdr
 Projekt ukazuje  wdoroznie aplikacji webowej któraz została zkonteryzowana w dokerze i została osadzona google cloud a jest zarzadzania za  pomoca kubernetesa. Omowie moduły  odpowiedzalnych za wysoka dostepnosc i  zasad działania sieci oraz omowienie kwesti skalowalnosci i łatwosci aktualizacji aplikacji webowej bez przerw w dostepnosci jej działaniu.
 
 #### 2. Opis teoretyczny
-### 	2.1 Infrastruktura fizyczna jako klucz do wysokiej dostepnosci i niezawodnosci
+####	2.1 Infrastruktura fizyczna jako klucz do wysokiej dostepnosci i niezawodnosci
 
 Utworzenie wysoko dostępnego środowiska w dzisiejszych czasach jest bardzo ważne jednak wiekszość firm nie stać na to aby to zrobić lokalnie ponieważ do wysokiej dostepności i niezawodnosci potrzebna nam jest wysoko dostepna infrastruktura która jest droaga w wdrozeniu oraz utrzymaniu. Wymaga znacznie wiecej uwagi administratorów oraz jest wyzsza szansza na awarie niz utworzenia tego srodowiska pod aplikacje w chmurze i często znacznie tansza oraz daje nam mozliwosc bardzo łatwego skalowania całes infrastruktury.
 
-### 	2.2 Kubernetes jako narzędzie do łatwego zarzadzania kontenerami Dockera
+#### 	2.2 Kubernetes jako narzędzie do łatwego zarzadzania kontenerami Dockera
 
 Docker jest platformą bazującą na metodzie wirtualizacji LXC na poziomie systemu operacyjnego (tzw. "konteneryzacji"). Pozwala ona na odizolowanie aplikacji od systemu operacyjnego, a także przydział konkretnych zasobów – CPU, RAM czy HDD.
 
@@ -43,7 +43,7 @@ Maszyną fizyczną lub wirtualną na której będą instalowane Pody. do utworze
 
 #Jedna z najwazniejszych rzeczy aby otrzymać wysokodestepna aplikacje jest zapewnienie bardzo szybkiego łacza i utworzenie loadbalansera który bedzie mogł rozrzucać ruch na wszystkie pody w aplikacji.
 
-### 	2.2 Services czyli moduł odpowiedzialny za sieć w Kubernetes
+####	2.2 Services czyli moduł odpowiedzialny za sieć w Kubernetes
 Pierwszym komponetem którego omówie jest Service.
 
 Komponent jest  odpowiedzialny za komunikację miedzy podami jak i równiez za wystawienie podow  na świat.
