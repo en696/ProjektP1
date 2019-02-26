@@ -48,13 +48,17 @@ Pierwszym komponetem którego omówie jest Service.
 
 Komponent jest  odpowiedzialny za komunikację miedzy podami jak i równiez za wystawienie podow  na świat.
 Komunikacja pomiędzy kontenerami w Podzie odbywa się w jadrze linuxa bez udziału sieci tzn  jeśli w jednym podzie mamy 2 lub wieicej kontenerów wszystkie kontenery bedą miały wspolny adres ip.
-Service może wystepować w 3 trybach ClusterIP, LoadBalancer,NodePort. Aby zrozumieć jak działa LoadBalancer wpierw trzeba zrozumieć jak działa clusterIP i NodePort
+Service może wystepować w 3 trybach ClusterIP, LoadBalancer,NodePort. Aby zrozumieć jak działa LoadBalancer wpierw trzeba zrozumieć jak działa clusterIP i NodePort poniewaz loadbalanser z nich kozysta.
+
+Tryb sieci ClusterIP słuzy wyłacznie do komunikacji wewnatrz klastra tzn tylko  miedzy podami i nodami
+
+Tryb sieci  NodePort to najbardziej prymitywny sposób na uzyskanie zewnętrznego ruchu bezpośrednio do Twojej usługi. NodePort, jak sama nazwa wskazuje, otwiera określony port we wszystkich węzłach (VM), a każdy ruch przesyłany do tego portu jest przekazywany do usługi.
+
+Najlepszą metoda do utworzenia wysoko dostępnej usługi jest Service w trybie LoadBalancer, aby loadbalanser działał potrzebuje wykorzystać loadbalanser dostawcy chmury prywatnj lub publicznej w moim przypadku jest to loadbalanser chmury googla. Jesli wybierzemy typ loadbalanser
+tryb sieci NodePort i ClusterIP zostanie utworzony samoczynie.
 
 ![Diagram](https://github.com/en696/ProjektP1/blob/master/Rysunek211.jpg)
 
-Tryb sieci CLusterIP słuzy wyłacznie do komunikacji wewnatrz klastra tzn tylko wyłacznie miedzy podami i nodami
-
-Tryb sieci Node port słuzy
 
 Jak widzimy na obrazku komunikacja w clusterIP odbywa sie za pomoca wirtualnego routera który pozwala komunikować sie wszystkim podom w klustrze tzn z podu  ngnix-hellow 1 możemy uzyskac dostep do Pod ngnix-hellow 2 pomimo ze znajdu sie na innym nodzie i w innej adresaci  , eth0 jest połaczony cbr0 za pomoca mostu a interface Veth0 jest do niego przyłaczony.
 Komunikacja pomiedzy podami w wym samym nodzie odbywa się za pomoca bridga
@@ -63,11 +67,19 @@ Kubernetes pody sa nie stałe czesto sa ubijane , replikowane , skalowane i zami
 Flannel uruchamia małego, pojedynczego agenta binarnego wywoływanego flanneldna każdym hoście i odpowiada za przydzielanie dzierżawy podsieci każdemu hostowi, wstępnie skonfigurowanej przestrzeni adresowej. Flannel używa API Kubernetes lub etcd bezpośrednio do przechowywania konfiguracji sieci, przydzielonych podsieci i wszelkich danych pomocniczych (takich jak publiczny adres IP hosta). Pakiety są przekazywane za pomocą jednego z kilku mechanizmów backendu, w tym VXLAN.
 
 
-Najlepszą metoda do utworzenia wysoko dostępnej usługi jest Service w trybie LoadBalancer aby loadbalanser działał potrzebuje wykorzystać loadbalanser dostawcy chmury prywatnj lub publicznej w moim przypadku jest to loadbalanser chmury googla. Jesli wybierzemy typ loadbalanser
-tryb sieci NodePort i ClusterIP zostanie utworzony samoczynie,
-
-
-#Dzieki metodzie NodePort mozemy wystawić poda na zewnatrz jednak ta metoda nie jest najlepszym loadbalanserm ponieważ zajmuje jeden port na wszystkich wezłach i taka aplikacja bedzie miała przypisany wysoki port , problemem jest rowniez to ze nie mozemy uzyc nazwy dns tylko musi to #byc adres ip.
 Klaster Kubernetesa może zostać postawiony na maszynach z np CentOS ale duzo lepszym rozwiazaniem jest wykorzystanie do tego chmury pywatnej np Openstacka i modułu Magnum, lub roziwazań chmur publicznych najlepszym wyborem bedzie google cloud.
 
-Obrazek ilustruje jak działa load balanser w k8s
+Obrazek ilustruje jak działa load balanser w kubernetes
+
+
+####	2.4 Kubernetes replicaset i auto scaling
+
+Replicaset jest obiektem kubernetesa który zapewnia nam  skalowalnosc podow.
+Pody możemy skalować
+
+Auto scaling w kubernetesie zapewnia nam duza elastycznasc i odciaza prace admina ponieważ mamy mozliwość wybrania ile maksymalnie i minimalnie  chcemy miec odpalonych podów podczas duzego obciazenia naszej aplikacji, kubernetes na biezaco monitoruje zuzycie poda i jak osiagniemy na nim podana przez nas w procentach utylizacje procesora lub pamieci ram kubernetes  bedzie skalował pody do osiagniecia maximum które to my mu wyznaczymy a gdy obciazenie sie zmniejszy, Kubernetes bedzie stopniowo zminiejszał liczbe podów w clustrze do minimum   
+
+####	2.3 Kubernetes deployment i rolling back
+
+Utworzenie deploymentu jest konieczna aby zaimplemontować aplikacje w kubernetesie.
+Plik konfiguracyjny deploymentu jest zapisanu w formacie  yaml lub JSON
