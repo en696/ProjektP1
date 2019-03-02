@@ -19,7 +19,7 @@ Zbigniew Domin
 
 #### 1. Wstęp
 Celem projektu jest pokazanie jednego z sposobów tworzenia (Projetkowania i wdrazania) nowoczesnej infrastruktury i srodowiska pod aplikacje webowa.
-Projekt ukazuje  wdoroznie aplikacji webowej któraz została zkonteryzowana w dokerze i została osadzona google cloud a jest zarzadzania za  pomoca kubernetesa. Omowie moduły  odpowiedzalnych za wysoka dostepnosc i  zasad działania sieci oraz omowienie kwesti skalowalnosci i łatwosci aktualizacji aplikacji webowej bez przerw w dostepnosci jej działaniu.
+Projekt ukazuje  wdoroznie aplikacji webowej któraz została zkonteryzowana w dokerze i została osadzona google cloud a jest zarzadzania za  pomoca kubernetesa. Omowie moduły  odpowiedzalnych za wysoka dostepnosc i  zasad działania sieci oraz omowienie kwesti skalowalnosci i łatwosci aktualizacji aplikacji webowej bez przerw w  jej działaniu oraz jak działa ingres.
 
 #### 2. Opis teoretyczny
 ####	2.1 Infrastruktura fizyczna jako klucz do wysokiej dostepnosci i niezawodnosci
@@ -38,10 +38,8 @@ Kubernetes bazuje na piętnastu latach doświadczeń Google w przetwarzaniu maso
 Najmniejsza jednostka w kubernetes. To ona odpowiedzialna jest za deklarowanie kontenerów odpalanych na tym samym host/node. Ogólnie kiedy ktoś mówi o Pod to ma namyśli przynajmniej jeden działający kontener
 
 Node w Kubernetesie
-
 Maszyną fizyczną lub wirtualną na której będą instalowane Pody. do utworzenia klastra aby utworzyć klaster potrzebne  są co najmniej 3 maszyny 2 node i jeden master który będzie odpowiedzialny za zarzadzanie pozostałymi nodami  
 
-#Jedna z najwazniejszych rzeczy aby otrzymać wysokodestepna aplikacje jest zapewnienie bardzo szybkiego łacza i utworzenie loadbalansera który bedzie mogł rozrzucać ruch na wszystkie pody w aplikacji.
 
 ####	2.2 Services czyli moduł odpowiedzialny za sieć w Kubernetes
 Pierwszym komponetem którego omówie jest Service.
@@ -67,19 +65,61 @@ Kubernetes pody sa nie stałe czesto sa ubijane , replikowane , skalowane i zami
 Flannel uruchamia małego, pojedynczego agenta binarnego wywoływanego flanneldna każdym hoście i odpowiada za przydzielanie dzierżawy podsieci każdemu hostowi, wstępnie skonfigurowanej przestrzeni adresowej. Flannel używa API Kubernetes lub etcd bezpośrednio do przechowywania konfiguracji sieci, przydzielonych podsieci i wszelkich danych pomocniczych (takich jak publiczny adres IP hosta). Pakiety są przekazywane za pomocą jednego z kilku mechanizmów backendu, w tym VXLAN.
 
 
-Klaster Kubernetesa może zostać postawiony na maszynach z np CentOS ale duzo lepszym rozwiazaniem jest wykorzystanie do tego chmury pywatnej np Openstacka i modułu Magnum, lub roziwazań chmur publicznych najlepszym wyborem bedzie google cloud.
+#### 2.3 ingress
+W przeciwieństwie do wszystkich powyższych obiektow, Ingress w rzeczywistości nie jest typem service. Zamiast tego znajduje się przed wieloma usługami i działa jako "inteligentny router" lub punkt początkowy w klastrze.
+Domyślny kontroler ingres ngnix uruchomi moduł równoważenia obciążenia HTTP (S) . Umożliwi to wykonanie routingu opartego na ścieżkach i subdomenach do usług zaplecza. Na przykład można wysłać wszystko na adres edomin.pl/hellow-aps-1 do usługi hellow-aps-1 lub pod ścieżką eldorotos/hellow-aps-2 ścieżka do usługi hellow-aps-2
+![Diagram](https://github.com/en696/ProjektP1/blob/master/Rysunek11.jpg)
 
-Obrazek ilustruje jak działa load balanser w kubernetes
+Obrazek przedstawia sposób działania ingresa użtkownik łaczy się z nginx-ingress-controller która jest pod addresem 35.228.100.152. Nstepnie wybiera z która aplikacja chce sie połaczyć poprzez podanie nazwy aplikacji po / jesli uzytkownik wpisze nieprawidłowonazwe aplikacji lub taka nie istnieje dla podanej domeny to użytkownik zostanie przekierowany do nginx-ingress-default-backend. W moim przykładzie jest tylko jedna domena edomin.pl lecz ingres moze wykorzystywać wiele domen jednoczesnie. Pozniej użytkownik zostaje przekierowany do suługi cluster ip ktora juz łaczy sie bezposrednio  z podami w ktorych jest aplikacja.Ingress kontroler rozrzuca ruch przemienie na pody
+Aplikacja w podzie jest dostepna na porcie 80 oraz 443.
 
 
 ####	2.4 Kubernetes replicaset i auto scaling
 
 Replicaset jest obiektem kubernetesa który zapewnia nam  skalowalnosc podow.
-Pody możemy skalować
+Pody możemy skalować recznie lub ustawić Auto scaling.
+Przy tworzeniu pliku konfiguracyjnego  obiektu replicaset nalezy przypisać im etykiety po których kubernetes bedzie rozpoznawał pody które moaja zostać zreplikowane oraz bedzie pilował aby zawsze była odpalona przynajmniej minimalna liczba podow które zadeklarujemy.
+Obiekt jest odpowiedzialny za utrzymanie cigle działajacyh podow jesli jakis pod ulegnie awari kubernetes restartuje tego poda , lub komunikacja z node zostanie ustracona poprzez awarie noda kubernetes automatycznie utworzy  pody na innym nodzie
 
-Auto scaling w kubernetesie zapewnia nam duza elastycznasc i odciaza prace admina ponieważ mamy mozliwość wybrania ile maksymalnie i minimalnie  chcemy miec odpalonych podów podczas duzego obciazenia naszej aplikacji, kubernetes na biezaco monitoruje zuzycie poda i jak osiagniemy na nim podana przez nas w procentach utylizacje procesora lub pamieci ram kubernetes  bedzie skalował pody do osiagniecia maximum które to my mu wyznaczymy a gdy obciazenie sie zmniejszy, Kubernetes bedzie stopniowo zminiejszał liczbe podów w clustrze do minimum   
+Auto scaling w kubernetesie zapewnia nam duza elastycznasc i odciaza prace admina ponieważ mamy mozliwość wybrania ile maksymalnie i minimalnie  chcemy miec odpalonych podów. Podczas duzego obciazenia naszej aplikacji, kubernetes na biezaco monitoruje zuzycie poda i jak osiagniemy na nim podana przez nas w procentach utylizacje procesora lub pamieci ram kubernetes  bedzie skalował pody do osiagniecia maximum które to my mu wyznaczymy a gdy obciazenie sie zmniejszy, Kubernetes bedzie stopniowo zminiejszał liczbe podów w clustrze do minimum   
 
-####	2.3 Kubernetes deployment i rolling back
+####	2.3 Kubernetes deployment , rolling back, rolling update,
 
-Utworzenie deploymentu jest konieczna aby zaimplemontować aplikacje w kubernetesie.
-Plik konfiguracyjny deploymentu jest zapisanu w formacie  yaml lub JSON
+Obiekt deplyment jest obiektem nadrzadnym nad replicaset tzn w obiekcie deployment mozemy napisać plik konfiguracyjny replicaset i autoslacer.Obiekt jest odpowiedzialny za utrzymanie cigle działajacyh podow jesli jakis pod ulegnie awari kubernetes restartuje tego poda.Obiektem
+Jeśli chemy uzyskać jak najwyzsza niezawodnosc naszej aplikacja powina być umieszczona w obiekcie deployment. Ponieważ deployment jest odpowiedzialny za rolling update który natomiast daje nam mozliwosc updatowania plikacji bez koniecznosci jej zatrzymywania.
+Dzieje sie to w taki sposob iz mamy powiedzmy odpalone 4 pody, to kazdy pod po kolei jest zastepowany nowa wersia aplikacji dzieki czemu uzytkownik zalogowany do naszej aplikacji moze wogule sie nie zorientowac ze własnie ta aplikacja została zaktualizowana.
+roling back natomiast daje nam mozliwosc cofniencia tego procesu jesli okaze sie ze nasza nowa wersja aplikacji mam powazne bledy ktore uniemozliwiaja korzystania z naszej aplikacji.
+Pliki konfiguracyjny deploymentu tak jak innych obiektów  jest zapisywana w formacie  yaml lub JSON
+
+#### 2.5 HELM
+Helm pomaga w zarządzaniu aplikacjami Kubernetes - Helm Charts pomaga definiować, instalować i aktualizować nawet najbardziej złożoną aplikację Kubernetes.
+
+##### 3. Część praktyczna
+#### 3.1 Infrastruktura
+W Google cloud zostało utwoczony cluster kubernetesa.
+Klaster kubernetesa składa się z 3 nodów, są 3 maszyny wirtualne a każda o parametrach
+HDD 100 GB
+CPU Intel(R) Xeon 1x2GZh
+RAM 3.75 GB
+OS jest to googlowski OS opart o jadra linuxa version 4.14.65
+master nodem jest api google cloud
+
+#### 3.2 Infrastruktura sieci
+Aplikacja w podzie jest dostepna na porcie 80 .
+
+
+
+####3.3 aplikacja webowa
+Aplikacjie webowe którą uzywam w moim przykładzie to obraz dockerowy ngnix-hellow.
+Aplikacja ma za zadania pokazać działanie Ingressa ktory udostepnia nam aplikacje w sieci publicznej pod domena edomin.pl oraz działa jak loudbalanser rozrzuca ruch na rozne nody i pody.
+Pokazuje nazwe hostname poda i jego adress ip
+Aplikacja posiada opcje auto-refresh
+
+
+
+
+####4 Wnioski
+
+
+
+####5 Lektrua
