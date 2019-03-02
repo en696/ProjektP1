@@ -18,6 +18,7 @@ Zbigniew Domin
 #### 5. Literatura
 
 #### 1. Wstęp
+
 Celem projektu jest pokazanie jednego z sposobów tworzenia (Projetkowania i wdrazania) nowoczesnej infrastruktury i srodowiska pod aplikacje webowa.
 Projekt ukazuje  wdoroznie aplikacji webowej któraz została zkonteryzowana w dokerze i została osadzona google cloud a jest zarzadzania za  pomoca kubernetesa. Omowie moduły  odpowiedzalnych za wysoka dostepnosc i  zasad działania sieci oraz omowienie kwesti skalowalnosci i łatwosci aktualizacji aplikacji webowej bez przerw w  jej działaniu oraz jak działa ingres.
 
@@ -42,6 +43,7 @@ Maszyną fizyczną lub wirtualną na której będą instalowane Pody. do utworze
 
 
 ####	2.2 Services czyli moduł odpowiedzialny za sieć w Kubernetes
+
 Pierwszym komponetem którego omówie jest Service.
 
 Komponent jest  odpowiedzialny za komunikację miedzy podami jak i równiez za wystawienie podow  na świat.
@@ -92,10 +94,19 @@ roling back natomiast daje nam mozliwosc cofniencia tego procesu jesli okaze sie
 Pliki konfiguracyjny deploymentu tak jak innych obiektów  jest zapisywana w formacie  yaml lub JSON
 
 #### 2.5 HELM
-Helm pomaga w zarządzaniu aplikacjami Kubernetes - Helm Charts pomaga definiować, instalować i aktualizować nawet najbardziej złożoną aplikację Kubernetes.
 
-##### 3. Część praktyczna
+Helm pomaga w zarządzaniu aplikacjami Kubernetes - Helm Charts pomaga definiować, instalować i aktualizować nawet najbardziej złożoną aplikację Kubernetes.
+Dzieki Helmowi mozna stworzyć jeden plik który nazywa sie Charts w którym zdefinujemy wszystkie obiekty kubernetesa takie jak deployment service i config mapy
+
+#### 2.7  ConfigMaps
+
+Pliki ConfigMaps wiążą pliki konfiguracyjne, argumenty wiersza poleceń, zmienne środowiskowe, numery portów i inne artefakty konfiguracji z kontenerami i komponentami systemu Pods w czasie wykonywania. ConfigMaps umożliwia oddzielenie konfiguracji od poda i komponentów, co pomaga utrzymać przenośność , ułatwia konfigurowanie ich konfiguracji i zarządzanie nimi
+ConfigMaps nie zawsze jest dobrym pomysłem ponieważ przechowuje niezaszyfrowane informacje o konfiguracji.
+
+#### 3. Część praktyczna
+
 #### 3.1 Infrastruktura
+
 W Google cloud zostało utwoczony cluster kubernetesa.
 Klaster kubernetesa składa się z 3 nodów, są 3 maszyny wirtualne a każda o parametrach
 HDD 100 GB
@@ -105,20 +116,30 @@ OS jest to googlowski OS opart o jadra linuxa version 4.14.65
 master nodem jest api google cloud
 
 #### 3.2 Infrastruktura sieci
-Aplikacja w podzie jest dostepna na porcie 80 .
 
 
 
-####3.3 aplikacja webowa
-Aplikacjie webowe którą uzywam w moim przykładzie to obraz dockerowy ngnix-hellow.
+
+#### 3.3 aplikacja webowa
+
 Aplikacja ma za zadania pokazać działanie Ingressa ktory udostepnia nam aplikacje w sieci publicznej pod domena edomin.pl oraz działa jak loudbalanser rozrzuca ruch na rozne nody i pody.
 Pokazuje nazwe hostname poda i jego adress ip
 Aplikacja posiada opcje auto-refresh
+Pliki kofiguracyjne obiektu deployment obu aplikacji  zostały dodane do githuba.
+Jest to hellow-app-1.yaml i hellow-app-2.yaml.
+Na obu dwóch aplikacjach została uruchomiona replikacja na minimum 3 pody
+I zostało dodane autoscaling uzaleznione od utylizacji procesora jesli jest rowne badz wieksze od 80% aplikacje automatycznie sie zreplikuja do max 8 podów
+Obiekt ConfigMaps jest odpowiedzialny za przechowywanie certyfikatów SSL dla obydwuch aplikacji
+Na aplikacjach dzieki swojej liczbnosci mozna przeprowadzac Roling update.
+
+#### 3.4 Ingressa
+
+Za pomocą helma został utworzone dwa obiekty nginx-ingress-default-backend oraz nginx-ingress-controller.
+nginx-ingress-default-backend obsługiwać wszystkie ścieżki URL i hosty, których kontroler Nginx nie rozumie tj. Wszystkie żądania, które nie są odwzorowane za pomocą Ingressu.
+nginx-ingress-controller odpowiada
 
 
-
-
-####4 Wnioski
+#### 4 Wnioski
 
 
 
