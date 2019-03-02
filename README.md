@@ -136,11 +136,14 @@ Na aplikacjach dzieki swojej liczbnosci mozna przeprowadzac Roling update.
 
 Za pomocą helma został utworzone dwa obiekty nginx-ingress-default-backend oraz nginx-ingress-controller.
 nginx-ingress-default-backend obsługiwać wszystkie ścieżki URL i hosty, których kontroler Nginx nie rozumie tj. Wszystkie żądania, które nie są odwzorowane za pomocą Ingressu.
-nginx-ingress-controller odpowiada
+nginx-ingress-controller działa jako usługa loudbalanser na addresie 35.228.100.152 i na dwuch portach 443 oraz 80 rozrzuca ruch HTTP oraz HTTPS.
+Została dodana adnotacja która dodaje authentykacje przed dostepem do aplikacji hellow-app-1
+został utworzony obiekt ingres hellow-app-ingress za pomoca   pliku hellow-app-ingress.yaml obiekt określa reguły ścieżki oraz na który port zostanie przekazanie ządanie po nazwie domeny/subdomeny
 
 
 #### 4 Wnioski
-
+W dzisiejszych czasie budowanie wysoko dostepnego srodowiska pod aplikacje webowa podstawa
+W dzisiejszych coraz wiekszy udział w aplikacjach maja aplikacje webowe , kazdemu twory takiej aplikacji zalezy na tym aby była cigle aktywna . Jest to bardzo trudne zadanie zepewnic bardzo wysoka dostepnosc.Przykładowy projekt który przedstawiłem jest wstanie roziwać znaczna wiekszosc problemów które maja tworcy aplikacji, Rozwiazanie ktore przedstawiłem rozwiazuje nam takie problemy jak potrzeba zatrzymania aplikacji podczas aktualizacji aplikacji czy autoskalowanie ilosci aplikacji podczas duzego obciazenia aplikacji co daje nam szybka odpowiedz na to że chwilowo jest znacznie wiekszy ruchu.dockeryzacja aplikacji jest przydatna jesli mamy zamiar odpalic duza liczbe aplikacji poniewaz zyskujemy mniejsze utylizacje komponentow porownujac to np z zwykłym serverm czy nawet z serverm zwirualizowanym.dockeryzacja i kubernetes  aplikacji rozwiazuje nam takze pbroblem z backupy i przywracaniem z backupow ponieważ kazdy pod który ulegnie awari jest automatycznie restartowany a jesli ulegnie awari node to pody automatycznie wstana na innch nodach oraz  mamy do dyspozycji role back mozemy łatwo przywrocic aplikacje do stanu przed zle działajaca nowa wersja aplikacji. Rozwiazanie chmurowe moze okazac sie drosze od rozwiazania lokalnego jednak gdy nasza aplikacja szybko rosnie i potrzebujemy duzej elastycznosci lub jesli zalezy nam na jak najwyzszej wydajnosci aplikacji oraz niezawodnosci wtedy rozwiazanie ktore przedstawiłem jest doskonałe 
 
 
 ####5 Lektrua
