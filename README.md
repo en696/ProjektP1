@@ -44,7 +44,7 @@ Najmniejsza jednostka w kubernetes. To ona odpowiedzialna jest za deklarowanie k
 Node w Kubernetesie
 Maszyną fizyczną lub wirtualną na której będą instalowane Pody. do utworzenia klastra  potrzebne  są co najmniej 3 maszyny 2 node i jeden master który będzie odpowiedzialny za zarzadzanie pozostałymi nodami
 
-####	2.2 Services czyli moduł odpowiedzialny za sieć w Kubernetes
+####	2.3 Services czyli moduł odpowiedzialny za sieć w Kubernetes
 
 Komponent jest  odpowiedzialny za komunikację miedzy podami jak i również za wystawienie podow  na świat.
 Komunikacja pomiędzy kontenerami w Podzie odbywa się w jadrze linuxa bez udziału sieci tzn  jeśli w jednym podzie mamy 2 lub więcej kontenerów wszystkie kontenery będą miały wspólny adres ip.
@@ -66,7 +66,7 @@ Kubernetes pody są nie stałe często są ubijane , replikowane , skalowane i z
 
 Flannel uruchamia małego, pojedynczego agenta binarnego wywoływanego flanneldna każdym hoście i odpowiada za przydzielanie dzierżawy podsieci każdemu hostowi, wstępnie skonfigurowanej przestrzeni adresowej. Flannel używa API Kubernetes lub etcd bezpośrednio do przechowywania konfiguracji sieci, przydzielonych podsieci i wszelkich danych pomocniczych (takich jak publiczny adres IP hosta). Pakiety są przekazywane za pomocą jednego z kilku mechanizmów backendu, w tym VXLAN.
 
-#### 2.3 ingress
+#### 2.4 ingress
 W przeciwieństwie do wszystkich powyższych obiektów, Ingress w rzeczywistości nie jest typem service. Zamiast tego znajduje się przed wieloma usługami i działa jako "inteligentny router" lub punkt początkowy w klastrze.
 Domyślny kontroler ingres ngnix uruchomi moduł równoważenia obciążenia HTTP (S) . Umożliwi to wykonanie routingu opartego na ścieżkach i subdomenach do usług zaplecza. Na przykład można wysłać wszystko na adres edomin.pl/hellow-aps-1 do usługi hellow-aps-1 lub pod eldorotos/hellow-aps-2 ścieżka do usługi hellow-aps-2
 ![Diagram](https://github.com/en696/ProjektP1/blob/master/Rysunek11.jpg)
@@ -75,7 +75,7 @@ Obrazek przedstawia sposób działania ingressa użytkownik łączy się z nginx
 Aplikacja w podzie jest dostępna na porcie 80 oraz 443.
 
 
-####	2.4 Kubernetes replicaset i auto scaling
+####	2.5 Kubernetes replicaset i auto scaling
 
 Replicaset jest obiektem kubernetesa który zapewnia nam  skalowalność podow.
 Pody możemy skalować ręcznie lub ustawić Auto scaling.
@@ -84,7 +84,7 @@ Obiekt jest odpowiedzialny za utrzymanie ciągle działających podow jeśli jak
 
 Auto scaling w kubernetesie zapewnia nam duża elastyczność i odciąża prace admina ponieważ mamy możliwość wybrania ile maksymalnie i minimalnie  chcemy mieć odpalonych podów. Podczas dużego obciążenia naszej aplikacji, kubernetes na bieżąco monitoruje zużycie poda i jak osiągniemy na nim podana przez nas w procentach utylizacje procesora lub pamięci ram kubernetes  będzie skalował pody do osiągniecia maximum które to my mu wyznaczymy a gdy obciążenie się zmniejszy, Kubernetes będzie stopniowo zmniejszał liczbę podów w clustrze do minimum   
 
-####	2.5 Kubernetes deployment , rolling back, rolling update,
+####	2.6 Kubernetes deployment , rolling back, rolling update,
 
 Obiekt deployment jest obiektem nadrzędnym nad replicaset tzn w obiekcie deployment możemy napisać plik konfiguracyjny replicaset i autoslacer. Obiekt jest odpowiedzialny za utrzymanie ciągle działających podow jeśli jakiś pod ulegnie awarii kubernetes restartuje tego poda.
 Jeśli chcemy uzyskać jak najwyższa niezawodność naszej aplikacja powinna być umieszczona w obiekcie deployment. Ponieważ deployment jest odpowiedzialny za rolling update który natomiast daje nam możliwość aktualizacji aplikacji bez konieczności jej zatrzymywania.
@@ -92,12 +92,12 @@ Dzieje się to w taki sposób iż mamy powiedzmy odpalone 4 pody, to każdy pod 
 roling back natomiast daje nam możliwość wycofania tego procesu jeśli okaże się ze nasza nowa wersja aplikacji mam poważne błędy które uniemożliwiają korzystania z naszej aplikacji.
 Pliki konfiguracyjny deploymentu tak jak innych obiektów  jest zapisywana w formacie  yaml lub JSON
 
-#### 2.6 HELM
+#### 2.7 HELM
 
 Helm pomaga w zarządzaniu aplikacjami Kubernetes - Helm Charts pomaga definiować, instalować i aktualizować nawet najbardziej złożoną aplikację Kubernetes.
 Dzieki Helmowi mozna stworzyć jeden plik który nazywa sie Charts w którym zdefinujemy wszystkie obiekty kubernetesa takie jak deployment service i config mapy
 
-#### 2.7  ConfigMaps
+#### 2.8  ConfigMaps
 
 Pliki ConfigMaps wiążą pliki konfiguracyjne, argumenty wiersza poleceń, zmienne środowiskowe, numery portów i inne artefakty konfiguracji z kontenerami i komponentami systemu Pods w czasie wykonywania. ConfigMaps umożliwia oddzielenie konfiguracji od poda i komponentów, co pomaga utrzymać przenośność , ułatwia konfigurowanie ich konfiguracji i zarządzanie nimi
 ConfigMaps nie zawsze jest dobrym pomysłem ponieważ przechowuje niezaszyfrowane informacje o konfiguracji.
