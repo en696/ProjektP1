@@ -137,15 +137,22 @@ został utworzony obiekt ingres hellow-app-ingress za pomocą   pliku hellow-app
 
 #### 3.5 debugowanie problemów
 
-Kubernetes zapewnia nam n
 
-aby sprawdzic jakie pody sa uruchomione nalezy wydać polecenie kubectl get pod (oplionalnie mozna dodac --namespace jesli nasze pody nie znajduja sie w default namespace)
-![Diagram](https://github.com/en696/ProjektP1/blob/master/1.jpg)
-aby sprawdzić ile nodow tworzy cluster i czy wszystkie odpowiadaja nalezy wdyac polecenie kubectl get node (W moim przypadku powiny być 3 nody).
+Aby sprawdzić ile nodow tworzy cluster i czy wszystkie odpowiadaja nalezy wdyac polecenie kubectl get node (W moim przypadku powiny być 3 nody).
+
 ![Diagram](https://github.com/en696/ProjektP1/blob/master/2.jpg)
-Sprawdzanie odpalonych usuług sieciowych tzw services wykonujemy za pomaca kubectl get service powiny działac 3 usługi
+
+Wszystkie moje pody odpalone sa w default namespace a  wieć zeby sprawdzić czy sa uruchomione nalezy wydać polecenie  kubectl get pod. Powiny być odpalone 3 pody pierwszej aplikacji oraz 3 pody drugiej aplikacji oraz 2 pody odpowiedzialne za backed oraz 2 ingress controler
+
+![Diagram](https://github.com/en696/ProjektP1/blob/master/1.jpg)
+
+Sprawdzanie odpalonych usuług sieciowych tzw services wykonujemy za pomaca kubectl get service powiny działac 4 usługi
+2 Usługi typu clusterIP od aplikacji, jeden jako loudbalanser oraz jeden jako Ruch przychodzący
+
 ![Diagram](https://github.com/en696/ProjektP1/blob/master/3.jpg)
+
 Do kazdego kontenera mozemy sie zalogowac za pomoca shell google cloud używajac polecenia kubectl exec -ti nazwa poda uzyskana za pomoca kubectl get node  sh
+
 ![Diagram](https://github.com/en696/ProjektP1/blob/master/5.jpg)
 
 
