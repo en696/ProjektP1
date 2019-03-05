@@ -60,8 +60,11 @@ tryb sieci NodePort i ClusterIP zostanie utworzony samoczynnie po utworzeniu loa
 ![Diagram](https://github.com/en696/ProjektP1/blob/master/Rysunek211.jpg)
 
 
-Jak widzimy na obrazku komunikacja w clusterIP odbywa się za pomocą wirtualnego routera który pozwala komunikować się wszystkim podom w klastrze. Z poda  ngnix-hellow 1 możemy uzyskać dostęp do Pod ngnix-hellow 2 pomimo ze znajdu się na innym nodzie i w innej adresaci  , eth0 jest połączony cbr0 za pomocą mostu a interfejsu Veth0 jest do niego przyłączony.
-Komunikacja pomiędzy podami w tym samym nodzie odbywa się za pomocą bridga
+Jak widzimy na obrazku komunikacja w clusterIP odbywa się za pomocą wirtualnej tablicy routingu który pozwala komunikować się wszystkim podom w klastrze. Z poda  ngnix-hellow 1 możemy uzyskać dostęp do Pod ngnix-hellow 2 pomimo ze znajdu się na innym nodzie i w innej adresaci  , eth0 jest połączony cbr0 za pomocą mostu a interfejsu Veth0 jest do niego przyłączony.
+Komunikacja pomiędzy podami w tym samym nodzie odbywa się za pomocą bridga jest to przedstawione na poniższym rysunku
+pakiet jest przekazywany do cbr0 który jest uzywany jako most ethernetowy , cbr0 wysyła arpa i sprawdza kto ma zadany address i zostaje zadresowany do vethyyy i pozniej wysłany na eth0 do podu nt 2 jest to standardowy sposób komunikacji w kubernetes istnieja rowniez inne sposoby implementacji 
+![Diagram](https://github.com/en696/ProjektP1/blob/master/4.gif)
+
 Kubernetes pody są nie stałe często są ubijane , replikowane , skalowane i zamieniane na inne dlatego nie wolno się przywiązywać do adresaci podów ponieważ kubernetes sam nadaje adresy ip podom z takiej puli jak mu wydzielimy u mnie jest to 10.52.0.0/14. Używam chmury Gogola do klastra kubernetes a wiec do adresaci nodow tez nie nalezy się przywiązywać ponieważ one tez podlegają skalowaniu . Kubernetes używa sieci nakładkowej jest ona zaznaczona na obrazku jako overlay w moim przypadku jest to flannel ale to można zmienić istnieje wiele innych rozwiązań do kubernetesa.  Kubernetes z modułem falannel sam za nas przypisze addresy ip, bedzie pilnował aby żaden pod nie dostał tego samego adresu ip  i stworzy mosty miedzy interfejsami oraz utworzy routing
 
 Flannel uruchamia małego, pojedynczego agenta binarnego wywoływanego flanneldna każdym hoście i odpowiada za przydzielanie dzierżawy podsieci każdemu hostowi, wstępnie skonfigurowanej przestrzeni adresowej. Flannel używa API Kubernetes lub etcd bezpośrednio do przechowywania konfiguracji sieci, przydzielonych podsieci i wszelkich danych pomocniczych (takich jak publiczny adres IP hosta). Pakiety są przekazywane za pomocą jednego z kilku mechanizmów backendu, w tym VXLAN.
